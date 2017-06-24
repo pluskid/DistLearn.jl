@@ -83,10 +83,6 @@ end
 "To be run on remote workers"
 function gather_local_statistics(worker_ref :: Future)
   worker = fetch(worker_ref)
-  if worker isa RemoteException
-    println(worker)
-    exit(0)
-  end
 
   stats = Dict(:n_train => get_num_samples(worker.dset_tr),
                :n_test => get_num_samples(worker.dset_tt),

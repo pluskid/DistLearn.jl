@@ -7,4 +7,4 @@ This example requires the following packages (with minimum version number specif
 
 - Julia 0.6.0
 - ArgParse.jl 0.5.0
-
+- MNIST 0.0.2
