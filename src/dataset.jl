@@ -1,3 +1,7 @@
+"""
+A simple dataset container. We assume each worker can hold its
+full dataset in its local memory here.
+"""
 struct Dataset
   data   :: AbstractArray{Float64, 2}
   labels :: Vector{Int64}

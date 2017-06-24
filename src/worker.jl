@@ -1,3 +1,12 @@
+"""
+A `Worker` object holds the necessary local states for a learner worker:
+
+ - dset_tr: the local partition of the training dataset
+ - dset_tt: the local partition of the test dataset
+ - hp: hyper parameters specific to each algorithm (e.g. batch size)
+ - lp: local parameters specific to each algorithm (e.g. algorithms in the
+   dual might store dual variables locally)
+"""
 mutable struct Worker{HPType, LPType}
   dset_tr   :: Dataset # training set
   dset_tt   :: Dataset # test / validation set

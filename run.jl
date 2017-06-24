@@ -7,11 +7,12 @@
 
 using DistLearn
 using ASGD
+using COCOA
 
 if length(ARGS) < 1
   println("Usage:")
   println()
-  println("  julia -p NWORKER run.jl (asgd|...) --options...")
+  println("  julia -p NWORKER run.jl (asgd|cocoa|...) --options...")
   println()
   println("e.g.  julia -p 2 run.jl asgd --help")
   exit(-1)
@@ -28,6 +29,9 @@ s = DistLearn.make_arg_parser()
 if algor_name == "asgd"
   args = ASGD.parse_cmdline(cmdline, s)
   ASGD.asgd(args)
+elseif algor_name == "cocoa"
+  args = COCOA.parse_cmdline(cmdline, s)
+  COCOA.cocoa(args)
 else
   error("Unknown algorithm: ", algor_name)
 end
