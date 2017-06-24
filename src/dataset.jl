@@ -1,5 +1,3 @@
-using MNIST
-
 """
 A simple dataset container. We assume each worker can hold its
 full dataset in its local memory here.
@@ -30,11 +28,6 @@ end
 Load dataset for a worker. We use data parallelism here, so the full
 dataset is split into `n_slices` chunks, and the i-th worker only
 load its own chunk.
-
-We provide two examples here:
-
- - demo: a simple toy dataset constructed on the fly
- - mnist: the mnist even-odd classification.
 
 Each worker only need to load its own partition of data. This could
 be easily implemented if your data is stored in, for example, HDF5
@@ -78,22 +71,6 @@ function load_datasets(name :: String, i_slice :: Int, n_slices :: Int)
       return Dataset(x, y)
     end
     return dsets
-  elseif name == "mnist"
-    # for simplicity we just load the full dataset and take
-    # the corresponding subset for this worker as MNIST is very small
-    dsets = map((traindata(), testdata())) do dset
-      data, labels = dset
-
-      # index for local worker's data slice
-      idx = compute_slice_index(i_slice, n_slices, length(labels))
-      data = data[:, idx]
-      labels = labels[idx]
-
-      # make +1/-1 binary labels
-      bin_labels = [2 * iseven(Int(y)) - 1 for y in labels]
-
-      return Dataset(data, bin_labels)
-    end
   else
     error("Unknown dataset: ", name)
   end

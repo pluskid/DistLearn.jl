@@ -82,7 +82,7 @@ end
 
 "To be run on remote workers"
 function gather_local_statistics(worker_ref :: Future)
-  worker = fetch(worker_ref)
+  worker = try_fetch(worker_ref)
 
   stats = Dict(:n_train => get_num_samples(worker.dset_tr),
                :n_test => get_num_samples(worker.dset_tt),
@@ -131,7 +131,7 @@ end
 
 "To be run on remote worker"
 function sdca(worker_ref :: Future, w :: Vector{Float64})
-  worker = fetch(worker_ref)
+  worker = try_fetch(worker_ref)
 
   hp = worker.hp
   X = worker.dset_tr.data
@@ -188,7 +188,7 @@ function cocoa(args)
   h_params = HyperParameters(args["beta"], args["regu-coef"],
                              args["smoothness"], R2, n, length(workers))
   invoke_on_workers(workers, h_params) do worker_ref, hp
-    fetch(worker_ref).hp = hp
+    try_fetch(worker_ref).hp = hp
   end
   println(h_params)
 

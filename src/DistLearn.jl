@@ -2,6 +2,9 @@ __precompile__()
 
 module DistLearn
 
+export try_fetch
+include("utils.jl")
+
 export Dataset
 export load_datasets, get_num_samples, get_num_features
 include("dataset.jl")

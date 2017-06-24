@@ -65,7 +65,7 @@ end
 
 "To be run on remote workers"
 function gather_local_statistics(worker_ref :: Future)
-  worker = fetch(worker_ref)
+  worker = try_fetch(worker_ref)
 
   stats = Dict(:n_train => get_num_samples(worker.dset_tr),
                :n_test => get_num_samples(worker.dset_tt),
@@ -86,7 +86,7 @@ size.
 """
 function prepare_for_epoch(workers, epoch :: Int)
   function worker_prepare_for_epoch(worker_ref :: Future, epoch :: Int)
-    worker = fetch(worker_ref)
+    worker = try_fetch(worker_ref)
     worker.lp.i_batch = 1
     shuffle!(worker.lp.tr_idx)
     worker.lp.ηₜ = worker.hp.η / sqrt(epoch)
@@ -121,7 +121,7 @@ To be run on remote workers. Compute the updates for the weights. We have
 applied step sizes locally on each worker.
 """
 function compute_delta(worker_ref :: Future, w :: Vector{Float64})
-  worker = fetch(worker_ref)
+  worker = try_fetch(worker_ref)
   idx1 = (worker.lp.i_batch-1) * worker.hp.batch_size + 1
   if idx1 > length(worker.lp.tr_idx)
     return nothing  # end of epoch
@@ -183,7 +183,7 @@ function asgd(args)
   h_params = HyperParameters(args["learning-rate"], args["batch-size"],
                              args["regu-coef"])
   invoke_on_workers(workers, h_params) do worker_ref, hp
-    fetch(worker_ref).hp = hp
+    try_fetch(worker_ref).hp = hp
   end
   println(h_params)
 
